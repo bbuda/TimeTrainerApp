@@ -1,0 +1,14 @@
+D:\aleks\TimeTrainer_WinForms\bin\Debug\net9.0-windows\TimeTrainer.exe
+D:\aleks\TimeTrainer_WinForms\bin\Debug\net9.0-windows\TimeTrainer.deps.json
+D:\aleks\TimeTrainer_WinForms\bin\Debug\net9.0-windows\TimeTrainer.runtimeconfig.json
+D:\aleks\TimeTrainer_WinForms\bin\Debug\net9.0-windows\TimeTrainer.dll
+D:\aleks\TimeTrainer_WinForms\bin\Debug\net9.0-windows\TimeTrainer.pdb
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.GeneratedMSBuildEditorConfig.editorconfig
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.AssemblyInfoInputs.cache
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.AssemblyInfo.cs
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.csproj.CoreCompileInputs.cache
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.dll
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\refint\TimeTrainer.dll
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.pdb
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\TimeTrainer.genruntimeconfig.cache
+D:\aleks\TimeTrainer_WinForms\obj\Debug\net9.0-windows\ref\TimeTrainer.dll
