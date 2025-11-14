@@ -50,8 +50,8 @@ public partial class MainForm : Form
 
     private GameRecord? bestRecord;
 
-    private const int Radius = 120;
-    private const int ClockSize = 240;
+    private const int ClockSize = 320;
+    private const int Radius = ClockSize / 2;
     private const int ClockCenterX = ClockSize / 2;
     private const int ClockCenterY = ClockSize / 2;
 
@@ -568,39 +568,54 @@ public partial class MainForm : Form
 
     private void InitializeTask1UI(Panel container)
     {
+        container.Controls.Clear();
+
+        TableLayoutPanel layout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 4,
+            BackColor = Color.Transparent,
+            Margin = new Padding(0),
+            Padding = new Padding(0)
+        };
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120f));
+        container.Controls.Add(layout);
+
         Label title1 = new Label
         {
             Text = "Покажите время",
             Font = new Font("Arial", 22, FontStyle.Bold),
-            AutoSize = true,
             ForeColor = ColorTranslator.FromHtml("#333333"),
-            Location = new Point(20, 20)
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Margin = new Padding(0, 0, 0, 10)
         };
-        container.Controls.Add(title1);
-        container.Resize += (s, e) =>
-        {
-            title1.Location = new Point((container.Width - title1.Width) / 2, 20);
-        };
-        title1.Location = new Point((container.Width - title1.Width) / 2, 20);
+        layout.Controls.Add(title1, 0, 0);
 
         targetTimeDisplay1 =
             new Label
             {
                 Text = "00:00",
-                Font = new Font("Arial", 56, FontStyle.Bold),
-                Size = new Size(300, 80),
-                TextAlign = ContentAlignment.MiddleCenter,
+                Font = new Font("Arial", 64, FontStyle.Bold),
                 ForeColor = ColorTranslator.FromHtml("#4CAF50"),
-                Location = new Point(20, 60)
+                Dock = DockStyle.Fill,
+                TextAlign = ContentAlignment.MiddleCenter,
+                Margin = new Padding(0, 0, 0, 10)
             };
-        container.Controls.Add(targetTimeDisplay1);
-        container.Resize += (s, e) =>
-        {
-            targetTimeDisplay1.Location = new Point((container.Width - 300) / 2, 60);
-        };
-        targetTimeDisplay1.Location = new Point((container.Width - 300) / 2, 60);
+        layout.Controls.Add(targetTimeDisplay1, 0, 1);
 
-        // Центрируем часы
+        Panel clockHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Padding = new Padding(0, 20, 0, 20),
+            BackColor = Color.Transparent
+        };
+        layout.Controls.Add(clockHost, 0, 2);
+
         clockPanel1 =
             new Panel
             {
@@ -613,12 +628,21 @@ public partial class MainForm : Form
         clockPanel1.MouseMove += ClockPanel_MouseMove;
         clockPanel1.MouseUp += ClockPanel_MouseUp;
         SetDoubleBuffered(clockPanel1);
-        container.Controls.Add(clockPanel1);
-        container.Resize += (s, e) =>
+        clockHost.Controls.Add(clockPanel1);
+        EventHandler clockHostResize = (s, e) =>
         {
-            clockPanel1.Location = new Point((container.Width - ClockSize) / 2, 160);
+            clockPanel1.Location = new Point((clockHost.Width - ClockSize) / 2,
+                                             (clockHost.Height - ClockSize) / 2);
         };
-        clockPanel1.Location = new Point((container.Width - ClockSize) / 2, 160);
+        clockHost.Resize += clockHostResize;
+        clockHostResize(clockHost, EventArgs.Empty);
+
+        Panel buttonHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        layout.Controls.Add(buttonHost, 0, 3);
 
         checkButton1 = new Button
         {
@@ -627,50 +651,92 @@ public partial class MainForm : Form
             BackColor = ColorTranslator.FromHtml("#4CAF50"),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(250, 55),
+            Size = new Size(250, 60),
             Cursor = Cursors.Hand
         };
         checkButton1.FlatAppearance.BorderSize = 0;
         checkButton1.FlatAppearance.MouseOverBackColor = ColorTranslator.FromHtml("#45A049");
         checkButton1.Click += CheckTime1_Click;
-        container.Controls.Add(checkButton1);
-        container.Resize += (s, e) =>
+        buttonHost.Controls.Add(checkButton1);
+        EventHandler buttonHostResize = (s, e) =>
         {
-            checkButton1.Location = new Point((container.Width - 250) / 2, 430);
+            checkButton1.Location = new Point((buttonHost.Width - checkButton1.Width) / 2,
+                                              (buttonHost.Height - checkButton1.Height) / 2);
         };
-        checkButton1.Location = new Point((container.Width - 250) / 2, 430);
+        buttonHost.Resize += buttonHostResize;
+        buttonHostResize(buttonHost, EventArgs.Empty);
     }
 
     private void InitializeTask2UI(Panel container)
     {
+        container.Controls.Clear();
+
+        TableLayoutPanel layout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 4,
+            BackColor = Color.Transparent,
+            Margin = new Padding(0),
+            Padding = new Padding(0)
+        };
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 120f));
+        container.Controls.Add(layout);
+
         Label title2 = new Label
         {
             Text = "Сколько минут прошло?",
             Font = new Font("Arial", 22, FontStyle.Bold),
-            AutoSize = true,
             ForeColor = ColorTranslator.FromHtml("#333333"),
-            Location = new Point(20, 20)
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Margin = new Padding(0, 0, 0, 10)
         };
-        container.Controls.Add(title2);
-        container.Resize += (s, e) =>
+        layout.Controls.Add(title2, 0, 0);
+
+        TableLayoutPanel clockArea = new TableLayoutPanel
         {
-            title2.Location = new Point((container.Width - title2.Width) / 2, 20);
+            Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 1,
+            BackColor = Color.Transparent,
+            Padding = new Padding(40, 10, 40, 10)
         };
-        title2.Location = new Point((container.Width - title2.Width) / 2, 20);
+        clockArea.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
+        clockArea.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50f));
+        clockArea.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        layout.Controls.Add(clockArea, 0, 1);
 
-        // Центрируем часы
-        int clockSpacing = 280;
-        int clockY = 80;
+        TableLayoutPanel startColumn = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = Color.Transparent
+        };
+        startColumn.RowStyles.Add(new RowStyle(SizeType.Absolute, 40f));
+        startColumn.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        clockArea.Controls.Add(startColumn, 0, 0);
 
-        Label startLabel =
-            new Label
-            {
-                Text = "НАЧАЛО",
-                Font = new Font("Arial", 14, FontStyle.Bold),
-                AutoSize = true,
-                ForeColor = ColorTranslator.FromHtml("#4CAF50")
-            };
-        container.Controls.Add(startLabel);
+        Label startLabel = new Label
+        {
+            Text = "НАЧАЛО",
+            Font = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = ColorTranslator.FromHtml("#4CAF50"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
+        };
+        startColumn.Controls.Add(startLabel, 0, 0);
+
+        Panel startClockHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        startColumn.Controls.Add(startClockHost, 0, 1);
 
         clockPanelStart =
             new Panel
@@ -682,17 +748,42 @@ public partial class MainForm : Form
         clockPanelStart.Tag = "Start";
         clockPanelStart.Paint += ClockPanel_Paint;
         SetDoubleBuffered(clockPanelStart);
-        container.Controls.Add(clockPanelStart);
+        startClockHost.Controls.Add(clockPanelStart);
+        EventHandler startHostResize = (s, e) =>
+        {
+            clockPanelStart.Location = new Point((startClockHost.Width - ClockSize) / 2,
+                                                Math.Max(0, (startClockHost.Height - ClockSize) / 2));
+        };
+        startClockHost.Resize += startHostResize;
+        startHostResize(startClockHost, EventArgs.Empty);
 
-        Label endLabel =
-            new Label
-            {
-                Text = "КОНЕЦ",
-                Font = new Font("Arial", 14, FontStyle.Bold),
-                AutoSize = true,
-                ForeColor = ColorTranslator.FromHtml("#FF5722")
-            };
-        container.Controls.Add(endLabel);
+        TableLayoutPanel endColumn = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = Color.Transparent
+        };
+        endColumn.RowStyles.Add(new RowStyle(SizeType.Absolute, 40f));
+        endColumn.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        clockArea.Controls.Add(endColumn, 1, 0);
+
+        Label endLabel = new Label
+        {
+            Text = "КОНЕЦ",
+            Font = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = ColorTranslator.FromHtml("#FF5722"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
+        };
+        endColumn.Controls.Add(endLabel, 0, 0);
+
+        Panel endClockHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        endColumn.Controls.Add(endClockHost, 0, 1);
 
         clockPanelEnd =
             new Panel
@@ -704,41 +795,67 @@ public partial class MainForm : Form
         clockPanelEnd.Tag = "End";
         clockPanelEnd.Paint += ClockPanel_Paint;
         SetDoubleBuffered(clockPanelEnd);
-        container.Controls.Add(clockPanelEnd);
-
-        container.Resize += (s, e) =>
+        endClockHost.Controls.Add(clockPanelEnd);
+        EventHandler endHostResize = (s, e) =>
         {
-            int centerX = container.Width / 2;
-            startLabel.Location = new Point(centerX - clockSpacing / 2 - 50, 50);
-            clockPanelStart.Location = new Point(centerX - clockSpacing / 2, clockY);
-            endLabel.Location = new Point(centerX + clockSpacing / 2 - 50, 50);
-            clockPanelEnd.Location = new Point(centerX + clockSpacing / 2, clockY);
+            clockPanelEnd.Location = new Point((endClockHost.Width - ClockSize) / 2,
+                                              Math.Max(0, (endClockHost.Height - ClockSize) / 2));
         };
-        int initialCenterX = container.Width / 2;
-        startLabel.Location = new Point(initialCenterX - clockSpacing / 2 - 50, 50);
-        clockPanelStart.Location = new Point(initialCenterX - clockSpacing / 2, clockY);
-        endLabel.Location = new Point(initialCenterX + clockSpacing / 2 - 50, 50);
-        clockPanelEnd.Location = new Point(initialCenterX + clockSpacing / 2, clockY);
+        endClockHost.Resize += endHostResize;
+        endHostResize(endClockHost, EventArgs.Empty);
+
+        Panel answerHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        layout.Controls.Add(answerHost, 0, 2);
+
+        FlowLayoutPanel answerPanel = new FlowLayoutPanel
+        {
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Margin = new Padding(0),
+            Padding = new Padding(0)
+        };
+        answerHost.Controls.Add(answerPanel);
+        EventHandler answerHostResize = (s, e) =>
+        {
+            answerPanel.Location = new Point((answerHost.Width - answerPanel.Width) / 2,
+                                             (answerHost.Height - answerPanel.Height) / 2);
+        };
+        answerHost.Resize += answerHostResize;
+        answerHostResize(answerHost, EventArgs.Empty);
 
         targetTimeDisplay2 =
             new Label
             {
                 Text = "Прошло:",
-                Font = new Font("Arial", 18, FontStyle.Bold),
+                Font = new Font("Arial", 20, FontStyle.Bold),
                 AutoSize = true,
-                ForeColor = ColorTranslator.FromHtml("#333333")
+                ForeColor = ColorTranslator.FromHtml("#333333"),
+                Margin = new Padding(0, 8, 15, 0)
             };
-        container.Controls.Add(targetTimeDisplay2);
+        answerPanel.Controls.Add(targetTimeDisplay2);
 
         answerTextBox2 =
             new TextBox
             {
-                Font = new Font("Arial", 18),
-                Size = new Size(200, 40),
+                Font = new Font("Arial", 20),
+                Size = new Size(240, 44),
                 PlaceholderText = "Минут или часов",
                 BorderStyle = BorderStyle.FixedSingle
             };
-        container.Controls.Add(answerTextBox2);
+        answerPanel.Controls.Add(answerTextBox2);
+
+        Panel buttonHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        layout.Controls.Add(buttonHost, 0, 3);
 
         checkButton2 = new Button
         {
@@ -747,25 +864,20 @@ public partial class MainForm : Form
             BackColor = ColorTranslator.FromHtml("#4CAF50"),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(250, 55),
+            Size = new Size(250, 60),
             Cursor = Cursors.Hand
         };
         checkButton2.FlatAppearance.BorderSize = 0;
         checkButton2.FlatAppearance.MouseOverBackColor = ColorTranslator.FromHtml("#45A049");
         checkButton2.Click += CheckTime2_Click;
-        container.Controls.Add(checkButton2);
-
-        container.Resize += (s, e) =>
+        buttonHost.Controls.Add(checkButton2);
+        EventHandler buttonHostResize = (s, e) =>
         {
-            int centerX = container.Width / 2;
-            targetTimeDisplay2.Location = new Point(centerX - 170, 370);
-            answerTextBox2.Location = new Point(centerX - 100, 370);
-            checkButton2.Location = new Point(centerX - 125, 450);
+            checkButton2.Location = new Point((buttonHost.Width - checkButton2.Width) / 2,
+                                              (buttonHost.Height - checkButton2.Height) / 2);
         };
-        int centerForInput = container.Width / 2;
-        targetTimeDisplay2.Location = new Point(centerForInput - 170, 370);
-        answerTextBox2.Location = new Point(centerForInput - 100, 370);
-        checkButton2.Location = new Point(centerForInput - 125, 450);
+        buttonHost.Resize += buttonHostResize;
+        buttonHostResize(buttonHost, EventArgs.Empty);
     }
 
     private void SetTaskVisibility(int taskNumber)
@@ -793,98 +905,104 @@ public partial class MainForm : Form
 
     private void InitializeTask3UI(Panel container)
     {
+        container.Controls.Clear();
+
+        TableLayoutPanel layout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 6,
+            BackColor = Color.Transparent,
+            Margin = new Padding(0),
+            Padding = new Padding(0)
+        };
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 40f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        layout.RowStyles.Add(new RowStyle(SizeType.Absolute, 180f));
+        container.Controls.Add(layout);
+
         Label title3 = new Label
         {
             Text = "🎮 ИГРОВОЙ РЕЖИМ 🎮",
             Font = new Font("Arial", 24, FontStyle.Bold),
-            AutoSize = true,
             ForeColor = ColorTranslator.FromHtml("#FF5722"),
-            Location = new Point(20, 20)
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
         };
-        container.Controls.Add(title3);
-        container.Resize += (s, e) =>
-        {
-            title3.Location = new Point((container.Width - title3.Width) / 2, 20);
-        };
-        title3.Location = new Point((container.Width - title3.Width) / 2, 20);
+        layout.Controls.Add(title3, 0, 0);
 
         bestScoreLabel = new Label
         {
             Text = "Лучший результат: -",
-            Font = new Font("Arial", 14, FontStyle.Bold),
-            Size = new Size(400, 30),
-            TextAlign = ContentAlignment.MiddleCenter,
-            ForeColor = ColorTranslator.FromHtml("#2196F3")
+            Font = new Font("Arial", 16, FontStyle.Bold),
+            ForeColor = ColorTranslator.FromHtml("#2196F3"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
         };
         UpdateBestScoreLabel();
-        container.Controls.Add(bestScoreLabel);
-        container.Resize += (s, e) =>
-        {
-            bestScoreLabel.Location = new Point((container.Width - 400) / 2, 60);
-        };
-        bestScoreLabel.Location = new Point((container.Width - 400) / 2, 60);
+        layout.Controls.Add(bestScoreLabel, 0, 1);
 
         timerLabel = new Label
         {
             Text = "Время: 60 сек",
             Font = new Font("Arial", 32, FontStyle.Bold),
-            Size = new Size(300, 50),
-            TextAlign = ContentAlignment.MiddleCenter,
-            ForeColor = ColorTranslator.FromHtml("#FF5722")
+            ForeColor = ColorTranslator.FromHtml("#FF5722"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
         };
-        container.Controls.Add(timerLabel);
-        container.Resize += (s, e) =>
-        {
-            timerLabel.Location = new Point((container.Width - 300) / 2, 110);
-        };
-        timerLabel.Location = new Point((container.Width - 300) / 2, 110);
+        layout.Controls.Add(timerLabel, 0, 2);
 
         statsLabel = new Label
         {
             Text = "Правильно: 0 | Неправильно: 0",
             Font = new Font("Arial", 16, FontStyle.Bold),
-            Size = new Size(400, 30),
-            TextAlign = ContentAlignment.MiddleCenter,
-            ForeColor = ColorTranslator.FromHtml("#333333")
+            ForeColor = ColorTranslator.FromHtml("#333333"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
         };
-        container.Controls.Add(statsLabel);
-        container.Resize += (s, e) =>
-        {
-            statsLabel.Location = new Point((container.Width - 400) / 2, 170);
-        };
-        statsLabel.Location = new Point((container.Width - 400) / 2, 170);
+        layout.Controls.Add(statsLabel, 0, 3);
 
-        // Панель для текущего задания игры
         Panel gameTaskPanel = new Panel
         {
             BackColor = ColorTranslator.FromHtml("#FAFAFA"),
-            Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right
+            Dock = DockStyle.Fill,
+            Padding = new Padding(30),
+            Tag = "GameTaskPanel"
         };
-        container.Controls.Add(gameTaskPanel);
-        container.Resize += (s, e) =>
+        layout.Controls.Add(gameTaskPanel, 0, 4);
+
+        TableLayoutPanel gameContentLayout = new TableLayoutPanel
         {
-            gameTaskPanel.Location = new Point(10, 220);
-            gameTaskPanel.Size = new Size(container.Width - 40, container.Height - 280);
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = Color.Transparent
         };
-        gameTaskPanel.Location = new Point(10, 220);
-        gameTaskPanel.Size = new Size(container.Width - 40, container.Height - 280);
+        gameContentLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        gameContentLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 100f));
+        gameTaskPanel.Controls.Add(gameContentLayout);
+
+        Panel clocksHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        gameContentLayout.Controls.Add(clocksHost, 0, 0);
 
         Label gameTaskLabel = new Label
         {
             Text = "Задание появится после начала игры",
-            Font = new Font("Arial", 16),
-            AutoSize = true,
-            ForeColor = ColorTranslator.FromHtml("#666666")
+            Font = new Font("Arial", 18, FontStyle.Regular),
+            ForeColor = ColorTranslator.FromHtml("#666666"),
+            Dock = DockStyle.Fill,
+            TextAlign = ContentAlignment.MiddleCenter
         };
         gameTaskLabel.Tag = "GameTaskLabel";
-        gameTaskPanel.Controls.Add(gameTaskLabel);
-        gameTaskPanel.Resize += (s, e) =>
-        {
-            gameTaskLabel.Location = new Point((gameTaskPanel.Width - gameTaskLabel.Width) / 2, (gameTaskPanel.Height - gameTaskLabel.Height) / 2);
-        };
-        gameTaskLabel.Location = new Point((gameTaskPanel.Width - gameTaskLabel.Width) / 2, (gameTaskPanel.Height - gameTaskLabel.Height) / 2);
+        clocksHost.Controls.Add(gameTaskLabel);
 
-        // Часы для режима "покажите время"
         gameClockPanel1 = new Panel
         {
             Size = new Size(ClockSize, ClockSize),
@@ -897,27 +1015,19 @@ public partial class MainForm : Form
         gameClockPanel1.MouseMove += ClockPanel_MouseMove;
         gameClockPanel1.MouseUp += ClockPanel_MouseUp;
         SetDoubleBuffered(gameClockPanel1);
-        gameTaskPanel.Controls.Add(gameClockPanel1);
-        gameTaskPanel.Resize += (s, e) =>
-        {
-            gameClockPanel1.Location = new Point((gameTaskPanel.Width - ClockSize) / 2, 30);
-        };
-        gameClockPanel1.Location = new Point((gameTaskPanel.Width - ClockSize) / 2, 30);
+        clocksHost.Controls.Add(gameClockPanel1);
 
-        // Часы для режима "сколько прошло"
-        int clockSpacing = 280;
-        
-        Label gameStartLabel = new Label
+        Label gameTargetLabel = new Label
         {
-            Text = "НАЧАЛО",
-            Font = new Font("Arial", 12, FontStyle.Bold),
-            Size = new Size(80, 20),
+            Text = "00:00",
+            Font = new Font("Arial", 40, FontStyle.Bold),
+            Size = new Size(ClockSize, 60),
             TextAlign = ContentAlignment.MiddleCenter,
             Visible = false,
-            Tag = "GameStartLabel",
+            Tag = "GameTargetLabel",
             ForeColor = ColorTranslator.FromHtml("#4CAF50")
         };
-        gameTaskPanel.Controls.Add(gameStartLabel);
+        clocksHost.Controls.Add(gameTargetLabel);
 
         gameClockPanel2 = new Panel
         {
@@ -929,19 +1039,19 @@ public partial class MainForm : Form
         };
         gameClockPanel2.Paint += ClockPanel_Paint;
         SetDoubleBuffered(gameClockPanel2);
-        gameTaskPanel.Controls.Add(gameClockPanel2);
+        clocksHost.Controls.Add(gameClockPanel2);
 
-        Label gameEndLabel = new Label
+        Label gameStartLabel = new Label
         {
-            Text = "КОНЕЦ",
-            Font = new Font("Arial", 12, FontStyle.Bold),
-            Size = new Size(80, 20),
+            Text = "НАЧАЛО",
+            Font = new Font("Arial", 14, FontStyle.Bold),
+            Size = new Size(ClockSize, 40),
             TextAlign = ContentAlignment.MiddleCenter,
             Visible = false,
-            Tag = "GameEndLabel",
-            ForeColor = ColorTranslator.FromHtml("#FF5722")
+            Tag = "GameStartLabel",
+            ForeColor = ColorTranslator.FromHtml("#4CAF50")
         };
-        gameTaskPanel.Controls.Add(gameEndLabel);
+        clocksHost.Controls.Add(gameStartLabel);
 
         gameClockPanel3 = new Panel
         {
@@ -953,75 +1063,120 @@ public partial class MainForm : Form
         };
         gameClockPanel3.Paint += ClockPanel_Paint;
         SetDoubleBuffered(gameClockPanel3);
-        gameTaskPanel.Controls.Add(gameClockPanel3);
+        clocksHost.Controls.Add(gameClockPanel3);
 
-        gameTaskPanel.Resize += (s, e) =>
+        Label gameEndLabel = new Label
         {
-            int centerX = gameTaskPanel.Width / 2;
-            gameStartLabel.Location = new Point(centerX - clockSpacing / 2 - 40, 10);
-            gameClockPanel2.Location = new Point(centerX - ClockSize / 2 - clockSpacing / 2, 30);
-            gameEndLabel.Location = new Point(centerX + clockSpacing / 2 - 40, 10);
-            gameClockPanel3.Location = new Point(centerX - ClockSize / 2 + clockSpacing / 2, 30);
-        };
-        int centerXInit = gameTaskPanel.Width / 2;
-        gameStartLabel.Location = new Point(centerXInit - clockSpacing / 2 - 40, 10);
-        gameClockPanel2.Location = new Point(centerXInit - ClockSize / 2 - clockSpacing / 2, 30);
-        gameEndLabel.Location = new Point(centerXInit + clockSpacing / 2 - 40, 10);
-        gameClockPanel3.Location = new Point(centerXInit - ClockSize / 2 + clockSpacing / 2, 30);
-
-        // Label для целевого времени в режиме 1
-        Label gameTargetLabel = new Label
-        {
-            Text = "00:00",
-            Font = new Font("Arial", 36, FontStyle.Bold),
-            Size = new Size(160, 50),
+            Text = "КОНЕЦ",
+            Font = new Font("Arial", 14, FontStyle.Bold),
+            Size = new Size(ClockSize, 40),
             TextAlign = ContentAlignment.MiddleCenter,
             Visible = false,
-            Tag = "GameTargetLabel",
-            ForeColor = ColorTranslator.FromHtml("#4CAF50")
+            Tag = "GameEndLabel",
+            ForeColor = ColorTranslator.FromHtml("#FF5722")
         };
-        gameTaskPanel.Controls.Add(gameTargetLabel);
-        gameTaskPanel.Resize += (s, e) =>
-        {
-            gameTargetLabel.Location = new Point((gameTaskPanel.Width - 160) / 2, 30);
-        };
-        gameTargetLabel.Location = new Point((gameTaskPanel.Width - 160) / 2, 30);
+        clocksHost.Controls.Add(gameEndLabel);
 
-        // Label для "Сколько прошло" в режиме 2
+        EventHandler clocksHostResize = (s, e) =>
+        {
+            int topMargin = 30;
+            int singleClockY = topMargin + 60;
+            gameClockPanel1.Location = new Point((clocksHost.Width - ClockSize) / 2,
+                                                 singleClockY);
+            gameTargetLabel.Location = new Point((clocksHost.Width - gameTargetLabel.Width) / 2,
+                                                 topMargin);
+
+            int spacing = 120;
+            int totalWidth = ClockSize * 2 + spacing;
+            int startX = Math.Max(0, (clocksHost.Width - totalWidth) / 2);
+            int clocksY = topMargin + 80;
+
+            gameStartLabel.Location = new Point(startX,
+                                                topMargin);
+            gameClockPanel2.Location = new Point(startX,
+                                                 clocksY);
+
+            int endX = startX + ClockSize + spacing;
+            gameEndLabel.Location = new Point(endX,
+                                              topMargin);
+            gameClockPanel3.Location = new Point(endX,
+                                                 clocksY);
+        };
+        clocksHost.Resize += clocksHostResize;
+        clocksHostResize(clocksHost, EventArgs.Empty);
+
+        Panel questionHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        gameContentLayout.Controls.Add(questionHost, 0, 1);
+
         Label gameQuestionLabel = new Label
         {
             Text = "Сколько минут прошло?",
-            Font = new Font("Arial", 18, FontStyle.Bold),
-            Size = new Size(300, 30),
-            TextAlign = ContentAlignment.MiddleCenter,
+            Font = new Font("Arial", 20, FontStyle.Bold),
+            ForeColor = ColorTranslator.FromHtml("#333333"),
             Visible = false,
             Tag = "GameQuestionLabel",
-            ForeColor = ColorTranslator.FromHtml("#333333")
+            AutoSize = true
         };
-        gameTaskPanel.Controls.Add(gameQuestionLabel);
-        gameTaskPanel.Resize += (s, e) =>
+        questionHost.Controls.Add(gameQuestionLabel);
+        EventHandler questionHostResize = (s, e) =>
         {
-            gameQuestionLabel.Location = new Point((gameTaskPanel.Width - 300) / 2, 250);
+            gameQuestionLabel.Location = new Point((questionHost.Width - gameQuestionLabel.Width) / 2,
+                                                   (questionHost.Height - gameQuestionLabel.Height) / 2);
         };
-        gameQuestionLabel.Location = new Point((gameTaskPanel.Width - 300) / 2, 250);
+        questionHost.Resize += questionHostResize;
+        questionHostResize(questionHost, EventArgs.Empty);
 
-        // Поле ввода для ответа
+        TableLayoutPanel actionsLayout = new TableLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            ColumnCount = 1,
+            RowCount = 2,
+            BackColor = Color.Transparent
+        };
+        actionsLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100f));
+        actionsLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 80f));
+        layout.Controls.Add(actionsLayout, 0, 5);
+
+        Panel answerControlsHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        actionsLayout.Controls.Add(answerControlsHost, 0, 0);
+
+        TableLayoutPanel answerControls = new TableLayoutPanel
+        {
+            ColumnCount = 1,
+            RowCount = 2,
+            AutoSize = true,
+            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            BackColor = Color.Transparent
+        };
+        answerControls.RowStyles.Add(new RowStyle(SizeType.Absolute, 60f));
+        answerControls.RowStyles.Add(new RowStyle(SizeType.Absolute, 70f));
+        answerControlsHost.Controls.Add(answerControls);
+        EventHandler answerControlsHostResize = (s, e) =>
+        {
+            answerControls.Location = new Point((answerControlsHost.Width - answerControls.Width) / 2,
+                                                (answerControlsHost.Height - answerControls.Height) / 2);
+        };
+        answerControlsHost.Resize += answerControlsHostResize;
+        answerControlsHostResize(answerControlsHost, EventArgs.Empty);
+
         gameAnswerTextBox = new TextBox
         {
-            Font = new Font("Arial", 18),
-            Size = new Size(200, 40),
+            Font = new Font("Arial", 20),
+            Size = new Size(260, 44),
             PlaceholderText = "Ответ",
             BorderStyle = BorderStyle.FixedSingle,
             Visible = false
         };
-        container.Controls.Add(gameAnswerTextBox);
-        container.Resize += (s, e) =>
-        {
-            gameAnswerTextBox.Location = new Point((container.Width - 200) / 2, container.Height - 200);
-        };
-        gameAnswerTextBox.Location = new Point((container.Width - 200) / 2, container.Height - 200);
+        answerControls.Controls.Add(gameAnswerTextBox, 0, 0);
 
-        // Кнопка проверки
         checkButton3 = new Button
         {
             Text = "✓ ПРОВЕРИТЬ",
@@ -1029,21 +1184,22 @@ public partial class MainForm : Form
             BackColor = ColorTranslator.FromHtml("#4CAF50"),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(250, 55),
+            Size = new Size(250, 60),
             Cursor = Cursors.Hand,
             Visible = false
         };
         checkButton3.FlatAppearance.BorderSize = 0;
         checkButton3.FlatAppearance.MouseOverBackColor = ColorTranslator.FromHtml("#45A049");
         checkButton3.Click += CheckGameAnswer_Click;
-        container.Controls.Add(checkButton3);
-        container.Resize += (s, e) =>
-        {
-            checkButton3.Location = new Point((container.Width - 250) / 2, container.Height - 140);
-        };
-        checkButton3.Location = new Point((container.Width - 250) / 2, container.Height - 140);
+        answerControls.Controls.Add(checkButton3, 0, 1);
 
-        // Кнопка старта игры
+        Panel startButtonHost = new Panel
+        {
+            Dock = DockStyle.Fill,
+            BackColor = Color.Transparent
+        };
+        actionsLayout.Controls.Add(startButtonHost, 0, 1);
+
         startGameButton = new Button
         {
             Text = "▶ НАЧАТЬ ИГРУ",
@@ -1051,19 +1207,20 @@ public partial class MainForm : Form
             BackColor = ColorTranslator.FromHtml("#FF5722"),
             ForeColor = Color.White,
             FlatStyle = FlatStyle.Flat,
-            Size = new Size(300, 60),
+            Size = new Size(320, 70),
             Cursor = Cursors.Hand
         };
         startGameButton.FlatAppearance.BorderSize = 0;
         startGameButton.FlatAppearance.MouseOverBackColor = ColorTranslator.FromHtml("#E64A19");
         startGameButton.Click += StartGame_Click;
-        container.Controls.Add(startGameButton);
-        container.Resize += (s, e) =>
+        startButtonHost.Controls.Add(startGameButton);
+        EventHandler startButtonHostResize = (s, e) =>
         {
-            startGameButton.Location = new Point((container.Width - 300) / 2, container.Height - 80);
+            startGameButton.Location = new Point((startButtonHost.Width - startGameButton.Width) / 2,
+                                                 (startButtonHost.Height - startGameButton.Height) / 2);
         };
-        startGameButton.Location = new Point((container.Width - 300) / 2, container.Height - 80);
-
+        startButtonHost.Resize += startButtonHostResize;
+        startButtonHostResize(startButtonHost, EventArgs.Empty);
     }
 
     private void GenerateTargetTime1()
